@@ -1,0 +1,22 @@
+# Flutter
+.dart_tool/
+.packages
+.pub/
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+.metadata
+*.iml
+.idea/
+.vscode/
+
+# Secrets and local configuration
+.env
+.env.*
+**/google-services.json
+**/GoogleService-Info.plist
+*.jks
+*.keystore
+
+# Generated launcher artwork (keep source artwork under assets/icon)
+android/app/src/main/res/mipmap-*/
