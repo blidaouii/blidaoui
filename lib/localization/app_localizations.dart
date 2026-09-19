@@ -15,7 +15,10 @@ class AppLocalizations {
     'start': {'en': 'Start game', 'fr': 'Commencer', 'ar': 'ابدأ اللعبة'},
     'roll': {'en': 'Roll dice', 'fr': 'Lancer le dé', 'ar': 'ارمِ النرد'},
     'yourTurn': {'en': 'Your turn', 'fr': 'À votre tour', 'ar': 'دورك'},
-    'settings': {'en': 'Settings', 'fr': 'Paramètres', 'ar': 'ال��عدادات'},
+    'settings': {'en': 'Settings', 'fr': 'Paramètres', 'ar': 'الإعدادات'},
+    'restart': {'en': 'Restart', 'fr': 'Recommencer', 'ar': 'إعادة اللعبة'},
+    'winner': {'en': 'wins!', 'fr': 'gagne !', 'ar': 'يفوز!'},
+    'home': {'en': 'Home', 'fr': 'Maison', 'ar': 'القاعدة'},
   };
 
   String text(String key) => _values[key]?[locale.languageCode] ?? _values[key]?['en'] ?? key;
@@ -23,12 +26,9 @@ class AppLocalizations {
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
-  @override
-  bool isSupported(Locale locale) => AppLocalizations.supportedLocales.any((item) => item.languageCode == locale.languageCode);
-  @override
-  Future<AppLocalizations> load(Locale locale) async => AppLocalizations(locale);
-  @override
-  bool shouldReload(_AppLocalizationsDelegate old) => false;
+  @override bool isSupported(Locale locale) => AppLocalizations.supportedLocales.any((item) => item.languageCode == locale.languageCode);
+  @override Future<AppLocalizations> load(Locale locale) async => AppLocalizations(locale);
+  @override bool shouldReload(_AppLocalizationsDelegate old) => false;
 }
 
 extension LocalizationContext on BuildContext {
