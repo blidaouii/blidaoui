@@ -22,9 +22,9 @@ class LudoRules {
   }
 
   static List<int> legalTokenIds(GameState state, int dice) {
-    if (dice < 1 || dice > 6 || state.dice != dice || state.winnerId != null) return const [];
-    final player = state.players[state.currentPlayer];
-    return [for (final token in state.tokens[player.id]!) if (_canMove(token, dice)) token.id];
+    if (state.winnerId != null || state.dice != dice || dice < 1 || dice > 6) return const [];
+    final tokens = state.tokens[state.players[state.currentPlayer].id]!;
+    return [for (final token in tokens) if (_canMove(token, dice)) token.id];
   }
 
   static bool _canMove(TokenState token, int dice) => token.isHome ? dice == 6 : !token.isFinished && token.progress + dice <= finishProgress;
@@ -33,23 +33,23 @@ class LudoRules {
     final dice = state.dice;
     if (dice == null || !legalTokenIds(state, dice).contains(tokenId)) throw StateError('Illegal token move');
     final player = state.players[state.currentPlayer];
-    final old = state.tokens[player.id]!;
-    final token = old.firstWhere((item) => item.id == tokenId);
-    final nextProgress = token.isHome ? 0 : token.progress + dice;
+    final moving = state.tokens[player.id]!.firstWhere((token) => token.id == tokenId);
+    final progress = moving.isHome ? 0 : moving.progress + dice;
+    final next = <String, List<TokenState>>{for (final entry in state.tokens.entries) entry.key: List<TokenState>.from(entry.value)};
+    next[player.id] = [for (final token in next[player.id]!) token.id == tokenId ? token.copyWith(progress: progress) : token];
     var captured = false;
-    final nextTokens = {...state.tokens, player.id: [for (final item in old) item.id == tokenId ? item.copyWith(progress: nextProgress) : item]};
-    final destination = boardCell(player.color, nextProgress);
+    final destination = boardCell(player.color, progress);
     if (destination >= 0 && !safeCells.contains(destination)) {
-      for (final opponent in state.players.where((p) => p.id != player.id)) {
-        nextTokens[opponent.id] = [for (final item in nextTokens[opponent.id]!) _captureIfPresent(item, opponent.color, destination, () => captured = true)];
+      for (final opponent in state.players.where((item) => item.id != player.id)) {
+        next[opponent.id] = [for (final token in next[opponent.id]!) _capture(token, opponent.color, destination, () => captured = true)];
       }
     }
-    final finished = nextTokens[player.id]!.every((item) => item.isFinished);
-    final nextPlayer = dice == 6 ? state.currentPlayer : (state.currentPlayer + 1) % state.players.length;
-    return MoveResult(state.copyWith(tokens: nextTokens, currentPlayer: finished ? state.currentPlayer : nextPlayer, dice: null, winnerId: finished ? player.id : null), captured: captured);
+    final won = next[player.id]!.every((token) => token.isFinished);
+    final nextPlayer = dice == 6 || won ? state.currentPlayer : (state.currentPlayer + 1) % state.players.length;
+    return MoveResult(state.copyWith(tokens: next, dice: null, currentPlayer: nextPlayer, winnerId: won ? player.id : null), captured: captured);
   }
 
-  static TokenState _captureIfPresent(TokenState token, PlayerColor color, int destination, void Function() onCapture) {
+  static TokenState _capture(TokenState token, PlayerColor color, int destination, void Function() onCapture) {
     if (!token.isHome && !token.isFinished && boardCell(color, token.progress) == destination) { onCapture(); return token.copyWith(progress: -1); }
     return token;
   }

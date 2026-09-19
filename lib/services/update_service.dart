@@ -1,0 +1,3 @@
+class UpdateManifest { const UpdateManifest({required this.version, required this.storeUrl, this.force = false}); final String version; final String storeUrl; final bool force; }
+abstract class UpdateService { Future<UpdateManifest?> checkForUpdate(String currentVersion); }
+class OfficialDistributionUpdateService implements UpdateService { const OfficialDistributionUpdateService({required this.manifestUri}); final Uri manifestUri; @override Future<UpdateManifest?> checkForUpdate(String currentVersion) async { return null; /* Inject an authenticated HTTP client for a signed official manifest. Never download or install APKs here. */ } }
