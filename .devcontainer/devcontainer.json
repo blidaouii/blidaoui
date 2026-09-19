@@ -1,0 +1,39 @@
+{
+  "name": "Ludo DZ Flutter",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": "..",
+    "args": {
+      "FLUTTER_CHANNEL": "stable",
+      "FLUTTER_VERSION": "3.29.3"
+    }
+  },
+  "remoteUser": "vscode",
+  "containerEnv": {
+    "ANDROID_HOME": "/opt/android-sdk",
+    "ANDROID_SDK_ROOT": "/opt/android-sdk",
+    "FLUTTER_ROOT": "/opt/flutter",
+    "PUB_CACHE": "/home/vscode/.pub-cache"
+  },
+  "remoteEnv": {
+    "PATH": "/opt/flutter/bin:/opt/flutter/bin/cache/dart-sdk/bin:/opt/android-sdk/platform-tools:/opt/android-sdk/cmdline-tools/latest/bin:/opt/android-sdk/emulator:${containerEnv:PATH}"
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "Dart-Code.dart-code",
+        "Dart-Code.flutter",
+        "redhat.java",
+        "vscjava.vscode-java-pack"
+      ],
+      "settings": {
+        "dart.flutterSdkPath": "/opt/flutter",
+        "java.jdt.ls.java.home": "/usr/lib/jvm/java-17-openjdk-amd64"
+      }
+    }
+  },
+  "postCreateCommand": "flutter pub get",
+  "features": {
+    "ghcr.io/devcontainers/features/git:1": {}
+  }
+}
