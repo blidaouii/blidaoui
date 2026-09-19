@@ -1,20 +1,25 @@
-import '../game/local_game_controller.dart';
+import '../models/game_models.dart';
 
 abstract class BotStrategy {
-  int? chooseToken(LocalGameController game);
+  const BotStrategy();
+  int? chooseToken(List<int> legalTokenIds);
 }
 
-class EasyBot implements BotStrategy {
-  @override
-  int? chooseToken(LocalGameController game) => game.legalTokens.isEmpty ? null : game.legalTokens.first;
+class EasyBot extends BotStrategy {
+  const EasyBot();
+  @override int? chooseToken(List<int> legalTokenIds) => legalTokenIds.isEmpty ? null : legalTokenIds.first;
 }
 
-class MediumBot extends EasyBot {
-  @override
-  int? chooseToken(LocalGameController game) => game.legalTokens.isEmpty ? null : game.legalTokens.last;
+class MediumBot extends BotStrategy {
+  const MediumBot();
+  @override int? chooseToken(List<int> legalTokenIds) => legalTokenIds.isEmpty ? null : legalTokenIds.last;
 }
 
-class HardBot extends EasyBot {
-  @override
-  int? chooseToken(LocalGameController game) => game.legalTokens.isEmpty ? null : game.legalTokens.first;
+class HardBot extends BotStrategy {
+  const HardBot();
+  @override int? chooseToken(List<int> legalTokenIds) => legalTokenIds.isEmpty ? null : legalTokenIds.reduce((a, b) => a > b ? a : b);
+}
+
+class BotStrategies {
+  static BotStrategy forPlayer(PlayerState player) => const EasyBot();
 }
