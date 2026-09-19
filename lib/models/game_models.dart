@@ -3,19 +3,18 @@ enum PlayerColor { red, green, yellow, blue }
 enum PlayerKind { human, bot }
 
 class PlayerState {
-  const PlayerState({required this.id, required this.name, required this.color, this.kind = PlayerKind.human, this.finishedTokens = 0});
+  const PlayerState({required this.id, required this.name, required this.color, this.kind = PlayerKind.human});
   final String id;
   final String name;
   final PlayerColor color;
   final PlayerKind kind;
-  final int finishedTokens;
-  PlayerState copyWith({int? finishedTokens}) => PlayerState(id: id, name: name, color: color, kind: kind, finishedTokens: finishedTokens ?? this.finishedTokens);
+  PlayerState copyWith({String? name, PlayerKind? kind}) => PlayerState(id: id, name: name ?? this.name, color: color, kind: kind ?? this.kind);
 }
 
 class TokenState {
   const TokenState({required this.id, this.progress = -1});
   final int id;
-  /// -1 is home, 0..51 is on the shared track, 52..56 is the private home lane, 57 is finished.
+  /// -1 is home, 0..51 is on the shared track, 52..56 is the private lane, 57 is finished.
   final int progress;
   bool get isHome => progress == -1;
   bool get isFinished => progress == 57;
@@ -29,5 +28,14 @@ class GameState {
   final int currentPlayer;
   final int? dice;
   final String? winnerId;
-  GameState copyWith({List<PlayerState>? players, Map<String, List<TokenState>>? tokens, int? currentPlayer, int? dice, String? winnerId}) => GameState(players: players ?? this.players, tokens: tokens ?? this.tokens, currentPlayer: currentPlayer ?? this.currentPlayer, dice: dice ?? this.dice, winnerId: winnerId ?? this.winnerId);
+
+  GameState copyWith({List<PlayerState>? players, Map<String, List<TokenState>>? tokens, int? currentPlayer, Object? dice = _unset, Object? winnerId = _unset}) => GameState(
+        players: players ?? this.players,
+        tokens: tokens ?? this.tokens,
+        currentPlayer: currentPlayer ?? this.currentPlayer,
+        dice: identical(dice, _unset) ? this.dice : dice as int?,
+        winnerId: identical(winnerId, _unset) ? this.winnerId : winnerId as String?,
+      );
+
+  static const _unset = Object();
 }

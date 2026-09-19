@@ -1,4 +1,4 @@
-import 'dart:math';
+import 'package:flutter/foundation.dart';
 
 import '../models/game_models.dart';
 import 'ludo_rules.dart';
@@ -17,6 +17,11 @@ class LocalGameController extends ChangeNotifier {
   void move(int tokenId) {
     final result = LudoRules.move(state, tokenId);
     state = result.state;
+    notifyListeners();
+  }
+
+  void restart() {
+    state = LudoRules.newGame(playerCount: state.players.length);
     notifyListeners();
   }
 
